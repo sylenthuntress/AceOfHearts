@@ -57,6 +57,11 @@ public class LifestealHelper {
             return;
         }
 
+        EntityAttributeModifier existingModifier =  attributeInstance.getModifier(HEALTH_MODIFIER_ID);
+        if (existingModifier != null) {
+            amount += existingModifier.value();
+        }
+
         attributeInstance.addPersistentModifier(new EntityAttributeModifier(
                 HEALTH_MODIFIER_ID,
                 amount,
