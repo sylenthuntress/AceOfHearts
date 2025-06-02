@@ -15,6 +15,6 @@ public class AceOfHearts implements ModInitializer {
     }
 
     public void onInitialize() {
-        ExampleMod.LOGGER.info(MOD_NAME + " by SylentHuntress successfully loaded!");
+        AceOfHearts.LOGGER.info(MOD_NAME + " by SylentHuntress successfully loaded!");
     }
 }
