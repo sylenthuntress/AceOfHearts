@@ -3,16 +3,21 @@ package sylenthuntress.aceofhearts.util;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ConsumableComponent;
+import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.consume.PlaySoundConsumeEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
@@ -82,7 +87,14 @@ public class LifestealHelper {
 
     public static ItemStack getHeartItem() {
         ItemStack heartStack = new ItemStack(Items.PLAYER_HEAD);
+
+        // Appearance
         heartStack.set(DataComponentTypes.PROFILE, new ProfileComponent(HEART_PROFILE));
+
+        // Behavior
+        heartStack.remove(DataComponentTypes.EQUIPPABLE);
+
+        // Flavor text
         heartStack.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("item.heart.name"));
         heartStack.set(DataComponentTypes.LORE, new LoreComponent(
                 List.of(
