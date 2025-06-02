@@ -6,7 +6,7 @@ import net.minecraft.world.GameRules;
 
 public class ModGamerules {
     public static final GameRules.Key<GameRules.IntRule> MAX_HEALTH =
-            GameRuleRegistry.register("max_health", GameRules.Category.PLAYER, GameRuleFactory.createIntRule(40));
+            GameRuleRegistry.register("maxStolenHealth", GameRules.Category.PLAYER, GameRuleFactory.createIntRule(40));
 
     public static void registerAll() {
 
