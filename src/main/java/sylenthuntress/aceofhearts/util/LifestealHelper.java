@@ -2,15 +2,12 @@ package sylenthuntress.aceofhearts.util;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -19,9 +16,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
 import sylenthuntress.aceofhearts.AceOfHearts;
+import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 import sylenthuntress.aceofhearts.registry.ModGamerules;
 
-import java.util.Objects;
 import java.util.Optional;
 
 public class LifestealHelper {
@@ -36,43 +33,50 @@ public class LifestealHelper {
         HEART_PROFILE.getProperties().put("skin", HEART_PROPERTY);
     }
 
-    public static ItemEntity spawnHeart(ServerWorld world, BlockPos pos) {
-        return new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), getHeartItem());
-    }
-
     public static void removeHeart(ServerPlayerEntity owner, Optional<ServerPlayerEntity> source) {
         ServerWorld serverWorld = owner.getServerWorld();
 
-        addStolenHearts(owner, -2.0);
+        addHeart(owner, -1);
 
         if (source.isPresent()) {
-            if (Math.ceil(getMaxHealth(source.get())) <= serverWorld.getGameRules().getInt(ModGamerules.MAX_HEALTH)) {
-                ItemEntity heartEntity = spawnHeart(serverWorld, owner.getBlockPos());
-                heartEntity.setOwner(owner.getUuid());
-            } else addStolenHearts(source.get(), 2.0);
+            if (getHearts(owner) <= serverWorld.getGameRules().getInt(ModGamerules.MAX_HEARTS)) {
+                owner.dropItem(getHeartItem(), true, true);
+            } else addHeart(source.get(), 1);
         }
     }
 
-    public static double getMaxHealth(LivingEntity entity) {
-        return Objects.requireNonNull(entity.getAttributes().getCustomInstance(EntityAttributes.MAX_HEALTH)).getValue();
+    @SuppressWarnings({"UnstableApiUsage"})
+    public static double getHearts(ServerPlayerEntity player) {
+        return player.getAttachedOrElse(ModAttachmentTypes.HEARTS, 10);
     }
 
-    public static void addStolenHearts(ServerPlayerEntity player, double amount) {
+    public static void recalculateHealth(ServerPlayerEntity player) {
         EntityAttributeInstance attributeInstance = player.getAttributes().getCustomInstance(EntityAttributes.MAX_HEALTH);
         if (attributeInstance == null) {
             return;
         }
 
-        EntityAttributeModifier existingModifier =  attributeInstance.getModifier(HEALTH_MODIFIER_ID);
-        if (existingModifier != null) {
-            amount += existingModifier.value();
+        double newHealth = -attributeInstance.getBaseValue() + getHearts(player) * 2.0;
+        if (newHealth < -18.0) {
+            newHealth = -18.0;
         }
 
+        attributeInstance.removeModifier(HEALTH_MODIFIER_ID);
         attributeInstance.addPersistentModifier(new EntityAttributeModifier(
                 HEALTH_MODIFIER_ID,
-                amount,
+                newHealth,
                 EntityAttributeModifier.Operation.ADD_VALUE
         ));
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static void addHeart(ServerPlayerEntity player, int amount) {
+        if (!player.hasAttached(ModAttachmentTypes.HEARTS)) {
+            player.setAttached(ModAttachmentTypes.HEARTS, 10);
+        }
+
+        player.modifyAttached(ModAttachmentTypes.HEARTS, hearts -> hearts + amount);
+        recalculateHealth(player);
     }
 
     public static ItemStack getHeartItem() {

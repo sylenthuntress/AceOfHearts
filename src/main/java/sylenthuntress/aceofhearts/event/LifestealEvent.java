@@ -9,7 +9,7 @@ import sylenthuntress.aceofhearts.util.LifestealHelper;
 
 import java.util.Optional;
 
-public class LifestealEvent implements ServerLivingEntityEvents.AfterDeath {
+public class LifestealEvent implements ServerLivingEntityEvents.AfterDeath, ServerPlayerEvents.AfterRespawn {
     @Override
     public void afterDeath(LivingEntity entity, DamageSource damageSource) {
         if (!(entity instanceof ServerPlayerEntity player)) {
@@ -22,5 +22,10 @@ public class LifestealEvent implements ServerLivingEntityEvents.AfterDeath {
         }
 
         LifestealHelper.removeHeart(player, source);
+    }
+
+    @Override
+    public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
+        LifestealHelper.recalculateHealth(newPlayer);
     }
 }
