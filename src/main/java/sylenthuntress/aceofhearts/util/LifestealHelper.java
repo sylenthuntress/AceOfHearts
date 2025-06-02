@@ -19,6 +19,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
 import sylenthuntress.aceofhearts.AceOfHearts;
+import sylenthuntress.aceofhearts.registry.ModGamerules;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -40,11 +41,13 @@ public class LifestealHelper {
     }
 
     public static void removeHeart(ServerPlayerEntity owner, Optional<ServerPlayerEntity> source) {
+        ServerWorld serverWorld = owner.getServerWorld();
+
         addStolenHearts(owner, -2.0);
 
         if (source.isPresent()) {
-            if (getMaxHealth(source.get()) <= 40.0) {
-                ItemEntity heartEntity = spawnHeart(owner.getServerWorld(), owner.getBlockPos());
+            if (Math.ceil(getMaxHealth(source.get())) <= serverWorld.getGameRules().getInt(ModGamerules.MAX_HEALTH)) {
+                ItemEntity heartEntity = spawnHeart(serverWorld, owner.getBlockPos());
                 heartEntity.setOwner(owner.getUuid());
             } else addStolenHearts(source.get(), 2.0);
         }

@@ -6,6 +6,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sylenthuntress.aceofhearts.event.LifestealEvent;
+import sylenthuntress.aceofhearts.registry.ModGamerules;
 
 public class AceOfHearts implements DedicatedServerModInitializer {
     public static final String MOD_ID = "aceofhearts";
@@ -18,6 +19,8 @@ public class AceOfHearts implements DedicatedServerModInitializer {
 
     public void onInitializeServer() {
         AceOfHearts.LOGGER.info(MOD_NAME + " by SylentHuntress successfully loaded!");
+
+        ModGamerules.registerAll();
 
         ServerLivingEntityEvents.AFTER_DEATH.register(new LifestealEvent());
     }
