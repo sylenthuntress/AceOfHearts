@@ -1,4 +1,7 @@
 {
   "aceofhearts.discord": "Discord",
-  "gamerule.maxStolenHealth": "Maximum hearts from lifesteal"
+  "gamerule.maxStolenHearts": "Maximum hearts from lifesteal",
+  "item.heart.name": "Plucked Heart",
+  "item.heart.desc.1": "Ripped from the soul of another player.",
+  "item.heart.desc.2": "Consume to gain one extra heart"
 }

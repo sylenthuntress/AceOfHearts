@@ -3,6 +3,7 @@ package sylenthuntress.aceofhearts.util;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -12,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
@@ -19,6 +21,7 @@ import sylenthuntress.aceofhearts.AceOfHearts;
 import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 import sylenthuntress.aceofhearts.registry.ModGamerules;
 
+import java.util.List;
 import java.util.Optional;
 
 public class LifestealHelper {
@@ -38,11 +41,9 @@ public class LifestealHelper {
 
         addHeart(owner, -1);
 
-        if (source.isPresent()) {
-            if (getHearts(owner) <= serverWorld.getGameRules().getInt(ModGamerules.MAX_HEARTS)) {
-                owner.dropItem(getHeartItem(), true, true);
-            } else addHeart(source.get(), 1);
-        }
+        if (source.isEmpty() || getHearts(source.get()) <= serverWorld.getGameRules().getInt(ModGamerules.MAX_HEARTS)) {
+            owner.dropItem(getHeartItem(), true, true);
+        } else source.ifPresent(serverPlayer -> addHeart(serverPlayer, 1));
     }
 
     @SuppressWarnings({"UnstableApiUsage"})
@@ -82,6 +83,13 @@ public class LifestealHelper {
     public static ItemStack getHeartItem() {
         ItemStack heartStack = new ItemStack(Items.PLAYER_HEAD);
         heartStack.set(DataComponentTypes.PROFILE, new ProfileComponent(HEART_PROFILE));
+        heartStack.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("item.heart.name"));
+        heartStack.set(DataComponentTypes.LORE, new LoreComponent(
+                List.of(
+                        Text.translatable("item.heart.desc.1"),
+                        Text.translatable("item.heart.desc.2")
+                )
+        ));
 
         return heartStack;
     }
