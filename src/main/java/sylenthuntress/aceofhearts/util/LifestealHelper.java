@@ -6,6 +6,7 @@ import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -19,6 +20,7 @@ import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
 import sylenthuntress.aceofhearts.AceOfHearts;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class LifestealHelper {
@@ -38,17 +40,18 @@ public class LifestealHelper {
     }
 
     public static void removeHeart(ServerPlayerEntity owner, Optional<ServerPlayerEntity> source) {
-        ServerWorld serverWorld = owner.getServerWorld();
+        addStolenHearts(owner, -2.0);
 
-        ItemEntity heartEntity = spawnHeart(serverWorld, owner.getBlockPos());
-        heartEntity.setOwner(owner.getUuid());
-
-        if (source.isEmpty()) {
-            addStolenHearts(owner, -2.0);
-        } else {
-            addStolenHearts(owner, -2.0);
-            addStolenHearts(source.get(), 2.0);
+        if (source.isPresent()) {
+            if (getMaxHealth(source.get()) <= 40.0) {
+                ItemEntity heartEntity = spawnHeart(owner.getServerWorld(), owner.getBlockPos());
+                heartEntity.setOwner(owner.getUuid());
+            } else addStolenHearts(source.get(), 2.0);
         }
+    }
+
+    public static double getMaxHealth(LivingEntity entity) {
+        return Objects.requireNonNull(entity.getAttributes().getCustomInstance(EntityAttributes.MAX_HEALTH)).getValue();
     }
 
     public static void addStolenHearts(ServerPlayerEntity player, double amount) {
