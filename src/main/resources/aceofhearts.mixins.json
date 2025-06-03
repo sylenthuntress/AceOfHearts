@@ -1,10 +1,13 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "sylenthuntress.examplemod.mixin",
+  "package": "sylenthuntress.aceofhearts.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
-  "mixins": [],
+  "mixins": [
+    "Mixin_LivingEntity",
+    "Mixin_PlayerEntity"
+  ],
   "client": [],
   "server": [],
   "injectors": {
