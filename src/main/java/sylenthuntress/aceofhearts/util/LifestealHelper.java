@@ -3,10 +3,7 @@ package sylenthuntress.aceofhearts.util;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ConsumableComponent;
-import net.minecraft.component.type.EquippableComponent;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.component.type.*;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -20,6 +17,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
 import sylenthuntress.aceofhearts.AceOfHearts;
@@ -93,8 +91,15 @@ public class LifestealHelper {
 
         // Behavior
         heartStack.remove(DataComponentTypes.EQUIPPABLE);
+        heartStack.set(DataComponentTypes.FOOD, new FoodComponent.Builder()
+                .alwaysEdible()
+                .nutrition(20)
+                .saturationModifier(1)
+                .build()
+        );
 
         // Flavor text
+        heartStack.set(DataComponentTypes.RARITY, Rarity.EPIC);
         heartStack.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("item.heart.name"));
         heartStack.set(DataComponentTypes.LORE, new LoreComponent(
                 List.of(
