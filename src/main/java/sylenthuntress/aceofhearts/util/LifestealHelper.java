@@ -4,22 +4,24 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.*;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.consume.PlaySoundConsumeEffect;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Uuids;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
 import sylenthuntress.aceofhearts.AceOfHearts;
 import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 import sylenthuntress.aceofhearts.registry.ModGamerules;
@@ -33,24 +35,29 @@ public class LifestealHelper {
             ""
     );
     private static final Property HEART_PROPERTY = new Property("textures", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2NkYWE1YmYwYmM1NDIwNTBjNzM0YzU4ZjQyODMyMTVjOWE0ZjBmMThjM2RkYWQ4NzE5MTNkYmY2NjdjZTQzMyJ9fX0=");
-    private static final Identifier HEALTH_MODIFIER_ID = AceOfHearts.modIdentifier("stolen_hearts");
 
     static {
         HEART_PROFILE.getProperties().put("skin", HEART_PROPERTY);
     }
 
-    public static void removeHeart(ServerPlayerEntity owner, Optional<ServerPlayerEntity> source) {
-        ServerWorld serverWorld = owner.getServerWorld();
+    private static final ProfileComponent PROFILE_COMPONENT = new ProfileComponent(HEART_PROFILE);
 
-        addHeart(owner, -1);
+    private static final Identifier HEALTH_MODIFIER_ID = AceOfHearts.modIdentifier("stolen_hearts");
 
-        if (source.isEmpty() || getHearts(source.get()) <= serverWorld.getGameRules().getInt(ModGamerules.MAX_HEARTS)) {
-            owner.dropItem(getHeartItem(), true, true);
-        } else source.ifPresent(serverPlayer -> addHeart(serverPlayer, 1));
+    public static void removeHeart(ServerPlayerEntity owner, Optional<ServerPlayerEntity> source, boolean dropItem) {
+        owner.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 6, 0, false, false));
+        owner.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 6, 0, false, false));
+        addHearts(owner, -1);
+
+        if (source.isEmpty() || hasMaxHearts(source.get())) {
+            if (dropItem) {
+                owner.dropItem(getHeartItem(), true, true);
+            } else owner.giveItemStack(getHeartItem());
+        } else source.ifPresent(serverPlayer -> addHearts(serverPlayer, 1));
     }
 
     @SuppressWarnings({"UnstableApiUsage"})
-    public static double getHearts(ServerPlayerEntity player) {
+    public static int getHearts(ServerPlayerEntity player) {
         return player.getAttachedOrElse(ModAttachmentTypes.HEARTS, 10);
     }
 
@@ -73,24 +80,35 @@ public class LifestealHelper {
         ));
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    public static void addHeart(ServerPlayerEntity player, int amount) {
-        if (!player.hasAttached(ModAttachmentTypes.HEARTS)) {
-            player.setAttached(ModAttachmentTypes.HEARTS, 10);
-        }
+    public static void addHearts(ServerPlayerEntity player, int amount) {
+        setHearts(player, getHearts(player) + amount);
+    }
 
-        player.modifyAttached(ModAttachmentTypes.HEARTS, hearts -> hearts + amount);
+    @SuppressWarnings("UnstableApiUsage")
+    public static void setHearts(ServerPlayerEntity player, int amount) {
+        player.setAttached(ModAttachmentTypes.HEARTS, Math.clamp(amount, 0, getMaxHearts(player.getServerWorld())));
         recalculateHealth(player);
     }
 
     public static ItemStack getHeartItem() {
-        ItemStack heartStack = new ItemStack(Items.PLAYER_HEAD);
+        ItemStack heartStack = new ItemStack(Items.POISONOUS_POTATO);
+        var nbt = new NbtCompound();
+        nbt.putBoolean("HeartItem", true);
+        heartStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
 
         // Appearance
-        heartStack.set(DataComponentTypes.PROFILE, new ProfileComponent(HEART_PROFILE));
+        heartStack.set(DataComponentTypes.ITEM_MODEL, Identifier.of(Items.PLAYER_HEAD.toString()));
+        heartStack.set(DataComponentTypes.PROFILE, PROFILE_COMPONENT);
 
         // Behavior
-        heartStack.remove(DataComponentTypes.EQUIPPABLE);
+        heartStack.set(DataComponentTypes.MAX_STACK_SIZE, 1);
+        heartStack.set(DataComponentTypes.CONSUMABLE, ConsumableComponent.builder()
+                .consumeSeconds(5)
+                .sound(Registries.SOUND_EVENT.getEntry(SoundEvents.ENTITY_WARDEN_HEARTBEAT))
+                .finishSound(Registries.SOUND_EVENT.getEntry(SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE))
+                .build()
+        );
+
         heartStack.set(DataComponentTypes.FOOD, new FoodComponent.Builder()
                 .alwaysEdible()
                 .nutrition(20)
@@ -100,14 +118,37 @@ public class LifestealHelper {
 
         // Flavor text
         heartStack.set(DataComponentTypes.RARITY, Rarity.EPIC);
-        heartStack.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("item.heart.name"));
+        heartStack.set(DataComponentTypes.ITEM_NAME, Text.translatable("item.heart.name"));
         heartStack.set(DataComponentTypes.LORE, new LoreComponent(
                 List.of(
-                        Text.translatable("item.heart.desc.1"),
-                        Text.translatable("item.heart.desc.2")
+                        Text.translatable("item.heart.desc.1").formatted(Formatting.GRAY, Formatting.ITALIC),
+                        Text.translatable("item.heart.desc.2").formatted(Formatting.GOLD)
                 )
         ));
 
         return heartStack;
+    }
+
+    public static boolean isHeartItem(ItemStack stack) {
+        var component = stack.get(DataComponentTypes.CUSTOM_DATA);
+        if (component == null) {
+            return false;
+        }
+
+        //noinspection deprecation
+        var compound = component.getNbt();
+        if (compound == null) {
+            return false;
+        }
+
+        return compound.getBoolean("HeartItem", false);
+    }
+
+    public static boolean hasMaxHearts(ServerPlayerEntity player) {
+        return getHearts(player) >= getMaxHearts(player.getServerWorld());
+    }
+
+    public static int getMaxHearts(ServerWorld world) {
+        return world.getGameRules().getInt(ModGamerules.MAX_HEARTS);
     }
 }

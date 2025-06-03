@@ -1,7 +1,14 @@
 {
   "aceofhearts.discord": "Discord",
   "gamerule.maxStolenHearts": "Maximum hearts from lifesteal",
+  "commands.hearts.add.success": "Added %s hearts to %s, for a total of %s.",
+  "commands.hearts.set.success": "Set %s's hearts to %s.",
+  "commands.hearts.get.success": "Player %s has % hearts.",
+  "commands.hearts.withdraw.success": "Successfully withdrew %s hearts! Now at a total of %s.",
   "item.heart.name": "Plucked Heart",
   "item.heart.desc.1": "Ripped from the soul of another player.",
-  "item.heart.desc.2": "Consume to gain one extra heart"
+  "item.heart.desc.2": "Consume to gain one extra heart!",
+  "item.heart.use.max_hearts": "You already the max of %s hearts!",
+  "item.heart.use.add_heart": "New heart added! Total: %s",
+  "item.heart.use.add_heart.count": "%s"
 }

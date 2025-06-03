@@ -5,6 +5,11 @@ import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.scoreboard.Team;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +17,7 @@ import sylenthuntress.aceofhearts.command.HeartCommand;
 import sylenthuntress.aceofhearts.event.LifestealEvent;
 import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 import sylenthuntress.aceofhearts.registry.ModGamerules;
+import sylenthuntress.aceofhearts.util.LifestealHelper;
 
 public class AceOfHearts implements DedicatedServerModInitializer {
     public static final String MOD_ID = "aceofhearts";

@@ -21,7 +21,7 @@ public class LifestealEvent implements ServerLivingEntityEvents.AfterDeath, Serv
             source = Optional.of(sourcePlayer);
         }
 
-        LifestealHelper.removeHeart(player, source);
+        LifestealHelper.removeHeart(player, source, true);
     }
 
     @Override
