@@ -1,0 +1,55 @@
+package sylenthuntress.aceofhearts.mixin;
+
+import com.mojang.authlib.GameProfile;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
+
+import java.util.Set;
+
+@Mixin(ServerPlayerEntity.class)
+public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
+    public Mixin_ServerPlayerEntity(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
+        super(world, pos, yaw, gameProfile);
+    }
+
+    @Shadow public abstract boolean teleport(ServerWorld world, double destX, double destY, double destZ, Set<PositionFlag> flags, float yaw, float pitch, boolean resetCamera);
+
+    @Shadow public abstract void sendMessageToClient(Text message, boolean overlay);
+
+    @Shadow public abstract void sendMessage(Text message, boolean overlay);
+
+    @SuppressWarnings("UnstableApiUsage")
+    @Inject(
+            method = "tick",
+            at = @At("TAIL")
+    )
+    public void teleportToDeathpoint(CallbackInfo ci) {
+        BlockPos lastDeathPos = this.getAttached(ModAttachmentTypes.DEATH_COORDS);
+        if (lastDeathPos == null || !this.getAttachedOrElse(ModAttachmentTypes.DEAD, false)) {
+            return;
+        }
+
+        this.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, -1, 0, true, false, true));
+        this.sendMessage(Text.translatable("acofhearts.player.is_dead"), true);
+        this.teleport(lastDeathPos.getX(),lastDeathPos.getY(),lastDeathPos.getZ(),false);
+    }
+}

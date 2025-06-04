@@ -6,7 +6,8 @@
   "compatibilityLevel": "JAVA_18",
   "mixins": [
     "Mixin_ItemEntity",
-    "Mixin_LivingEntity"
+    "Mixin_LivingEntity",
+    "Mixin_ServerPlayerEntity"
   ],
   "client": [],
   "server": [],
