@@ -22,6 +22,11 @@ public class Mixin_EndCrystalEntity {
         public boolean shouldDamage(Explosion explosion, Entity entity) {
             return false;
         }
+
+        @Override
+        public float getKnockbackModifier(Entity entity) {
+            return 10.0F;
+        }
     };
 
     @WrapOperation(
