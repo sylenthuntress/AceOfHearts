@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -14,6 +15,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sylenthuntress.aceofhearts.command.HeartCommand;
+import sylenthuntress.aceofhearts.event.CustomLootTables;
 import sylenthuntress.aceofhearts.event.LifestealEvent;
 import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 import sylenthuntress.aceofhearts.registry.ModGamerules;
@@ -36,6 +38,7 @@ public class AceOfHearts implements DedicatedServerModInitializer {
 
         ServerLivingEntityEvents.AFTER_DEATH.register(new LifestealEvent());
         ServerPlayerEvents.AFTER_RESPAWN.register(new LifestealEvent());
+        LootTableEvents.MODIFY.register(new CustomLootTables());
         CommandRegistrationCallback.EVENT.register(new HeartCommand());
     }
 }

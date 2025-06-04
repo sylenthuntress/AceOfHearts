@@ -5,8 +5,13 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
   "mixins": [
+    "Access_ItemEntry",
+    "Access_LootTableBuilder",
+    "Access_TagEntry",
     "Mixin_ItemEntity",
     "Mixin_LivingEntity",
+    "Mixin_LootTable",
+    "Mixin_LootTableBuilder",
     "Mixin_ServerPlayerEntity"
   ],
   "client": [],
