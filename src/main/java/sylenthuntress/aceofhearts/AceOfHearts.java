@@ -2,6 +2,7 @@ package sylenthuntress.aceofhearts;
 
 
 import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -16,7 +17,7 @@ import sylenthuntress.aceofhearts.event.LifestealEvent;
 import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 import sylenthuntress.aceofhearts.registry.ModGamerules;
 
-public class AceOfHearts implements DedicatedServerModInitializer {
+public class AceOfHearts implements ModInitializer {
     public static final String MOD_ID = "aceofhearts";
     public static final String MOD_NAME = "AceOfHearts";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
@@ -25,7 +26,7 @@ public class AceOfHearts implements DedicatedServerModInitializer {
         return Identifier.of(MOD_ID, id);
     }
 
-    public void onInitializeServer() {
+    public void onInitialize() {
         AceOfHearts.LOGGER.info(MOD_NAME + " by SylentHuntress successfully loaded!");
 
         ModGamerules.registerAll();

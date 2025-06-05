@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "h": {
+      "fabric:type": "fabric:components",
+      "base": "minecraft:poisonous_potato",
+      "components": {
+        "minecraft:custom_data": {
+          "HeartItem": 1
+        }
+      }
+    },
+    "t": "minecraft:totem_of_undying"
+  },
+  "pattern": [
+    "hth",
+    "hhh",
+    " h "
+  ],
+  "result": {
+    "components": {
+      "minecraft:enchantment_glint_override": true,
+      "minecraft:item_name": {
+        "translate": "item.revival_totem.name"
+      },
+      "minecraft:lore": [
+        {
+          "color": "gray",
+          "italic": true,
+          "translate": "item.revival_totem.desc.1"
+        },
+        {
+          "color": "gold",
+          "translate": "item.revival_totem.desc.2"
+        }
+      ],
+      "minecraft:rarity": "epic"
+    },
+    "count": 1,
+    "id": "minecraft:totem_of_undying"
+  }
+}

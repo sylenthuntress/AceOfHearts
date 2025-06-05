@@ -13,9 +13,9 @@
   },
   "license": "${license}",
   "icon": "${mod_id}.png",
-  "environment": "server",
+  "environment": "*",
   "entrypoints": {
-    "server": [
+    "main": [
       "sylenthuntress.aceofhearts.AceOfHearts"
     ],
     "fabric-datagen": [
