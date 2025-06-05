@@ -12,5 +12,6 @@
   "item.heart.desc.2": "Consume to gain one extra heart!",
   "item.heart.use.max_hearts": "You already the max of %s hearts!",
   "item.heart.use.add_heart": "New heart added! Total: %s",
-  "item.heart.use.add_heart.count": "%s"
+  "item.heart.use.add_heart.count": "%s",
+  "item.netherite.equal_diamond": "Functionally equivalent to diamond!"
 }

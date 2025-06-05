@@ -13,7 +13,8 @@
     "Mixin_LivingEntity",
     "Mixin_LootTable",
     "Mixin_LootTableBuilder",
-    "Mixin_ServerPlayerEntity"
+    "Mixin_ServerPlayerEntity",
+    "Mixin_SmithingScreenHandler"
   ],
   "client": [],
   "server": [],
