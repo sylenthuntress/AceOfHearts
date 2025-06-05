@@ -152,7 +152,7 @@ public class HeartCommand implements CommandRegistrationCallback {
             source.sendFeedback(
                     () -> Text.translatable(
                             "commands.hearts.get.success",
-                            player.getName(), amount * factor
+                            player.getName(), amount
                     ),
                     false
             );
