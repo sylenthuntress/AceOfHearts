@@ -17,6 +17,9 @@
   "entrypoints": {
     "server": [
       "sylenthuntress.aceofhearts.AceOfHearts"
+    ],
+    "fabric-datagen": [
+      "sylenthuntress.aceofhearts.data.ModDataGenerator"
     ]
   },
   "mixins": [

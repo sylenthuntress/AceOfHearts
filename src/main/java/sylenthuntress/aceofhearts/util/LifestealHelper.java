@@ -9,6 +9,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -92,9 +93,7 @@ public class LifestealHelper {
 
     public static ItemStack getHeartItem() {
         ItemStack heartStack = new ItemStack(Items.POISONOUS_POTATO);
-        var nbt = new NbtCompound();
-        nbt.putBoolean("HeartItem", true);
-        heartStack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        heartStack.set(DataComponentTypes.CUSTOM_DATA, getHeartNbt());
 
         // Appearance
         heartStack.set(DataComponentTypes.ITEM_MODEL, Identifier.of(Items.PLAYER_HEAD.toString()));
@@ -127,6 +126,30 @@ public class LifestealHelper {
         ));
 
         return heartStack;
+    }
+
+    public static NbtComponent getHeartNbt() {
+        var nbt = new NbtCompound();
+        nbt.putBoolean("HeartItem", true);
+        return NbtComponent.of(nbt);
+    }
+
+    public static ItemStack getRevivalTotem() {
+        ItemStack revivalTotem = new ItemStack(Items.TOTEM_OF_UNDYING);
+
+        // Flavor text
+        revivalTotem.set(DataComponentTypes.RARITY, Rarity.EPIC);
+        revivalTotem.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+
+        revivalTotem.set(DataComponentTypes.ITEM_NAME, Text.translatable("item.revival_totem.name"));
+        revivalTotem.set(DataComponentTypes.LORE, new LoreComponent(
+                List.of(
+                        Text.translatable("item.revival_totem.desc.1").formatted(Formatting.GRAY, Formatting.ITALIC),
+                        Text.translatable("item.revival_totem.desc.2").formatted(Formatting.GOLD)
+                )
+        ));
+
+        return revivalTotem;
     }
 
     public static boolean isHeartItem(ItemStack stack) {

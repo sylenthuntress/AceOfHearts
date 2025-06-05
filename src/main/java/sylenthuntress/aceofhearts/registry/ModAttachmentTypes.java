@@ -25,7 +25,7 @@ public class ModAttachmentTypes {
     );
 
     public static final AttachmentType<BlockPos> DEATH_COORDS = AttachmentRegistry.create(
-            AceOfHearts.modIdentifier("is_dead"),
+            AceOfHearts.modIdentifier("death_coords"),
             builder -> builder
                     .initializer(() -> BlockPos.ORIGIN)
                     .persistent(BlockPos.CODEC)
