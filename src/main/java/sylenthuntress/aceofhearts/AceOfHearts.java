@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,5 +38,10 @@ public class AceOfHearts implements ModInitializer {
         ServerPlayerEvents.AFTER_RESPAWN.register(new LifestealEvent());
         LootTableEvents.MODIFY.register(new CustomLootTables());
         CommandRegistrationCallback.EVENT.register(new HeartCommand());
+
+        //noinspection CodeBlock2Expr
+        DefaultItemComponentEvents.MODIFY.register(modifyContext -> {
+            modifyContext.modify(Items.TOTEM_OF_UNDYING, builder -> builder.add(DataComponentTypes.DEATH_PROTECTION, null));
+        });
     }
 }
