@@ -2,9 +2,7 @@ package sylenthuntress.aceofhearts.mixin;
 
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -62,19 +60,38 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
         }
 
         for (Entity entity : this.getWorld().getOtherEntities(this, Box.from(lastDeathPos.toCenterPos()).expand(6))) {
-            if (!(entity instanceof ItemEntity itemEntity)) {
+            if (!entity.isOnGround() || !(entity instanceof ItemEntity itemEntity) || itemEntity.getOwner() == this) {
                 continue;
             }
 
             if (LifestealHelper.isRevivalTotem(itemEntity.getStack())) {
-                // TODO: add vfx, notification
+                // TODO: add vfx
+                MinecraftServer server = getServer();
+                if (server != null) {
+                    // TODO: translate message
+                    server.getPlayerManager().broadcast(
+                            Text.translatable("aceofhearts.player.revive_message",
+                                    this.getName(),
+                                    itemEntity.getOwner() == null ? "Unknown" : itemEntity.getOwner().getName(),
+                                    LifestealHelper.getRevivalTotem().getFormattedName()
+                            ), false
+                    );
+                }
+
+                LightningEntity lightning = EntityType.LIGHTNING_BOLT.spawn(this.getServerWorld(), lastDeathPos, SpawnReason.EVENT);
+                if (lightning != null) {
+                    lightning.setCosmetic(true);
+                    lightning.setChanneler((ServerPlayerEntity) (Object) this);
+                }
+
+                this.addDeathParticles();
                 this.playSoundToPlayer(
                         SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE,
                         SoundCategory.PLAYERS,
                         1, 1
                 );
 
-                this.kill(this.getServerWorld());
+                this.setHealth(0.0F);
                 entity.discard();
                 return;
             }

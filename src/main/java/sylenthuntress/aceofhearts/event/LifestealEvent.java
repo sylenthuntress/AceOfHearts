@@ -2,6 +2,7 @@ package sylenthuntress.aceofhearts.event;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -38,12 +39,7 @@ public class LifestealEvent implements ServerLivingEntityEvents.AfterDeath, Serv
         LifestealHelper.recalculateHealth(newPlayer);
 
         if (LifestealHelper.isDead(oldPlayer)) {
-            newPlayer.playSoundToPlayer(
-                    SoundEvents.ITEM_TOTEM_USE,
-                    SoundCategory.PLAYERS,
-                    1, 1
-            );
-
+            newPlayer.getWorld().sendEntityStatus(newPlayer, EntityStatuses.USE_TOTEM_OF_UNDYING);
             newPlayer.changeGameMode(GameMode.SURVIVAL);
             LifestealHelper.setHearts(newPlayer, 6);
             return;

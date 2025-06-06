@@ -9,6 +9,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -75,6 +76,41 @@ public class HeartCommand implements CommandRegistrationCallback {
         }
     }
 
+    public static class GiveNode {
+        public static LiteralCommandNode<ServerCommandSource> get() {
+            return CommandManager.literal("give")
+                    .requires(source -> source.hasPermissionLevel(2))
+                    .executes(context -> executeGive(context.getSource(), 1))
+                    .then(CommandManager.argument("amount", IntegerArgumentType.integer(1))
+                            .executes(context -> executeGive(context.getSource(), IntegerArgumentType.getInteger(context, "amount")))
+                            .then(CommandManager.argument("player", EntityArgumentType.player())
+                                    .requires(source -> source.hasPermissionLevel(2))
+                                    .executes(context -> executeGive(context.getSource(), EntityArgumentType.getPlayer(context, "player"), IntegerArgumentType.getInteger(context, "amount"))))).build();
+        }
+
+        private static int executeGive(ServerCommandSource source, ServerPlayerEntity player, int amount) {
+            ItemStack heartItem = LifestealHelper.getHeartItem();
+
+            for (int i = 0; i < amount; i++) {
+                player.giveItemStack(heartItem);
+            }
+
+            source.sendFeedback(
+                    () -> Text.translatable(
+                            "commands.hearts.give.success",
+                            amount, heartItem.getFormattedName()
+                    ),
+                    false
+            );
+
+            return amount;
+        }
+
+        private static int executeGive(ServerCommandSource source, int amount) throws CommandSyntaxException {
+            return executeGive(source, source.getPlayerOrThrow(), amount);
+        }
+    }
+
     public static class AddNode {
         public static LiteralCommandNode<ServerCommandSource> get() {
             return CommandManager.literal("add")
@@ -85,7 +121,7 @@ public class HeartCommand implements CommandRegistrationCallback {
                                     .executes(context -> executeAdd(context.getSource(), EntityArgumentType.getPlayer(context, "player"), IntegerArgumentType.getInteger(context, "amount"))))).build();
         }
 
-        private static int executeAdd(ServerCommandSource source, ServerPlayerEntity player, int amount) throws CommandSyntaxException {
+        private static int executeAdd(ServerCommandSource source, ServerPlayerEntity player, int amount) {
             LifestealHelper.addHearts(player, amount);
 
             source.sendFeedback(
@@ -114,7 +150,7 @@ public class HeartCommand implements CommandRegistrationCallback {
                                     .executes(context -> executeSet(context.getSource(), EntityArgumentType.getPlayer(context, "player"), IntegerArgumentType.getInteger(context, "amount"))))).build();
         }
 
-        private static int executeSet(ServerCommandSource source, ServerPlayerEntity player, int amount) throws CommandSyntaxException {
+        private static int executeSet(ServerCommandSource source, ServerPlayerEntity player, int amount) {
             LifestealHelper.setHearts(player, amount);
 
             source.sendFeedback(
@@ -146,7 +182,7 @@ public class HeartCommand implements CommandRegistrationCallback {
                                     .executes(context -> executeGet(context.getSource(), EntityArgumentType.getPlayer(context, "player"), IntegerArgumentType.getInteger(context, "factor"))))).build();
         }
 
-        private static int executeGet(ServerCommandSource source, ServerPlayerEntity player, float factor) throws CommandSyntaxException {
+        private static int executeGet(ServerCommandSource source, ServerPlayerEntity player, float factor) {
             int amount = LifestealHelper.getHearts(player);
 
             source.sendFeedback(
