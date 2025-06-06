@@ -1,0 +1,1 @@
+- Fixed weird bug crashing dedicated servers outside of dev env

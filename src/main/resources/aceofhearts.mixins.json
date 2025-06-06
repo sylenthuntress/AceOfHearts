@@ -12,7 +12,6 @@
     "Mixin_ItemEntity",
     "Mixin_LivingEntity",
     "Mixin_LootTable",
-    "Mixin_LootTableBuilder",
     "Mixin_ServerPlayerEntity",
     "Mixin_ShapedRecipeJsonBuilder",
     "Mixin_SmithingScreenHandler"
