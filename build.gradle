@@ -27,7 +27,7 @@ publishMods {
 
     file = remapJar.archiveFile
 
-    displayName = project.mod_name + fullVersion
+    displayName = project.mod_name + " " + fullVersion
     version = fullVersion
     type = ReleaseType.valueOf(project.stability)
     changelog = "# Version " + fullVersion +

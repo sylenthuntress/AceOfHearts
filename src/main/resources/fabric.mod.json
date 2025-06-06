@@ -8,7 +8,7 @@
     "${mod_author}\n\n"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/${modrinth_slug}",
+    "homepage": "${discord_invite}",
     "sources": "https://github.com/${github_repo}"
   },
   "license": "${license}",
