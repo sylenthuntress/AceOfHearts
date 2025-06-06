@@ -8,19 +8,19 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.entry.TagEntry;
-import org.apache.commons.compress.utils.Lists;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import sylenthuntress.aceofhearts.duck.Duck_LootTable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Mixin(LootTable.class)
 public class Mixin_LootTable implements Duck_LootTable {
     @Unique
-    private final Collection<Item> disallowedItems = Lists.newArrayList();
+    private final Collection<Item> disallowedItems = new ArrayList<>();
 
     @ModifyExpressionValue(
             method = "generateUnprocessedLoot(Lnet/minecraft/loot/context/LootContext;Ljava/util/function/Consumer;)V",

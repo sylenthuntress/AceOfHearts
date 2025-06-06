@@ -1,18 +1,18 @@
 package sylenthuntress.aceofhearts.util;
 
-import com.google.common.collect.Lists;
 import net.minecraft.scoreboard.ScoreHolder;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.Formatting;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class TeamBuilder {
     private final String name;
     private Formatting color;
-    private List<ScoreHolder> members = Lists.newArrayList();
+    private final List<ScoreHolder> members = new ArrayList<>();
 
     public static TeamBuilder create(String name) {
         return new TeamBuilder(name);
