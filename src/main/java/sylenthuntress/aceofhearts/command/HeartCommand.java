@@ -32,6 +32,7 @@ public class HeartCommand implements CommandRegistrationCallback {
         cmdNode.addChild(AddNode.get());
         cmdNode.addChild(SetNode.get());
         cmdNode.addChild(GetNode.get());
+        cmdNode.addChild(GiveNode.get());
 
         dispatcher.getRoot().addChild(cmdNode);
     }
@@ -89,16 +90,14 @@ public class HeartCommand implements CommandRegistrationCallback {
         }
 
         private static int executeGive(ServerCommandSource source, ServerPlayerEntity player, int amount) {
-            ItemStack heartItem = LifestealHelper.getHeartItem();
-
             for (int i = 0; i < amount; i++) {
-                player.giveItemStack(heartItem);
+                player.giveItemStack(LifestealHelper.getHeartItem());
             }
 
             source.sendFeedback(
                     () -> Text.translatable(
                             "commands.hearts.give.success",
-                            amount, heartItem.getFormattedName()
+                            amount, player.getName()
                     ),
                     false
             );

@@ -6,6 +6,7 @@
   "aceofhearts.player.revive_message": "%s has been brought back from the dead by %s using a %s!",
   "gamerule.maxStolenHearts": "Maximum hearts from lifesteal",
   "commands.hearts.add.success": "Added %s hearts to %s, for a total of %s.",
+  "commands.hearts.give.success": "Gave %s hearts to %s.",
   "commands.hearts.set.success": "Set %s's hearts to %s.",
   "commands.hearts.get.success": "Player %s has %s hearts.",
   "commands.hearts.withdraw.success": "Successfully withdrew %s hearts! Now at a total of %s.",
