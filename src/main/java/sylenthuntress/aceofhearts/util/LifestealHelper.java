@@ -109,7 +109,7 @@ public class LifestealHelper {
         // Behavior
         heartStack.set(DataComponentTypes.MAX_STACK_SIZE, 1);
         heartStack.set(DataComponentTypes.CONSUMABLE, ConsumableComponent.builder()
-                .consumeSeconds(5)
+                .consumeSeconds(2.5F)
                 .sound(Registries.SOUND_EVENT.getEntry(SoundEvents.ENTITY_WARDEN_HEARTBEAT))
                 .finishSound(Registries.SOUND_EVENT.getEntry(SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE))
                 .build()
