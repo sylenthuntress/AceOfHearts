@@ -14,7 +14,6 @@ public class ModAttachmentTypes {
             builder -> builder
                     .initializer(() -> 10)
                     .persistent(Codec.INT)
-                    .copyOnDeath()
     );
 
     public static final AttachmentType<Boolean> DEAD = AttachmentRegistry.create(
@@ -29,6 +28,7 @@ public class ModAttachmentTypes {
             builder -> builder
                     .initializer(() -> BlockPos.ORIGIN)
                     .persistent(BlockPos.CODEC)
+                    .copyOnDeath()
     );
 
     public static void registerAll() {

@@ -1,5 +1,6 @@
 package sylenthuntress.aceofhearts.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -22,6 +23,14 @@ public abstract class Mixin_LivingEntity {
     @Shadow public abstract Hand getActiveHand();
 
     @Shadow public abstract ItemStack getStackInHand(Hand hand);
+
+    @ModifyReturnValue(
+            method = "canGlide",
+            at = @At("RETURN")
+    )
+    public boolean disableElytra(boolean original) {
+        return false;
+    }
 
     @Inject(
             method = "consumeItem",

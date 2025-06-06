@@ -20,6 +20,9 @@
   ],
   "result": {
     "components": {
+      "minecraft:custom_data": {
+        "RevivalTotem": 1
+      },
       "minecraft:enchantment_glint_override": true,
       "minecraft:item_name": {
         "translate": "item.revival_totem.name"

@@ -1,6 +1,7 @@
 {
   "aceofhearts.discord": "Discord",
-  "aceofhearts.player.death_message": "You have lost all of your hearts and permanently died! Sit here, or get another player to revive you by dropping a Totem of Revival on your corpse.",
+  "aceofhearts.player.death_message.1": "You have lost all of your hearts and permanently died! %s",
+  "aceofhearts.player.death_message.2": "Sit here, or get another player to revive you by dropping a %s on your corpse.",
   "aceofhearts.player.is_dead": "You are dead!",
   "gamerule.maxStolenHearts": "Maximum hearts from lifesteal",
   "commands.hearts.add.success": "Added %s hearts to %s, for a total of %s.",
@@ -10,8 +11,12 @@
   "item.heart.name": "Plucked Heart",
   "item.heart.desc.1": "Ripped from the soul of another player.",
   "item.heart.desc.2": "Consume to gain one extra heart!",
+  "item.heart.desc.player": "Fettered soul of %s",
   "item.heart.use.max_hearts": "You already the max of %s hearts!",
   "item.heart.use.add_heart": "New heart added! Total: %s",
   "item.heart.use.add_heart.count": "%s",
+  "item.revival_totem.name": "Totem of Revival",
+  "item.revival_totem.desc.1": "Crafted with many stolen souls.",
+  "item.revival_totem.desc.2": "Drop on the location of a dead player to revive them!",
   "item.netherite.equal_diamond": "Functionally equivalent to diamond!"
 }

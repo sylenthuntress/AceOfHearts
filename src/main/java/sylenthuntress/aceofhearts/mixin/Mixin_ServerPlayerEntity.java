@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,8 +13,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
+import sylenthuntress.aceofhearts.util.LifestealHelper;
 
 import java.util.Set;
 
@@ -37,6 +43,12 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
 
     @Shadow public abstract void sendMessage(Text message, boolean overlay);
 
+    @Shadow public abstract ServerWorld getServerWorld();
+
+    @Shadow public abstract void playSoundToPlayer(SoundEvent sound, SoundCategory category, float volume, float pitch);
+
+    @Shadow public abstract void addEnchantedHitParticles(Entity target);
+
     @SuppressWarnings("UnstableApiUsage")
     @Inject(
             method = "tick",
@@ -45,11 +57,32 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
     public void teleportToDeathpoint(CallbackInfo ci) {
         BlockPos lastDeathPos = this.getAttached(ModAttachmentTypes.DEATH_COORDS);
         if (lastDeathPos == null || !this.getAttachedOrElse(ModAttachmentTypes.DEAD, false)) {
-            return;
+             return;
+        }
+
+        for (Entity entity : this.getWorld().getOtherEntities(this, Box.from(lastDeathPos.toCenterPos()).expand(6))) {
+            if (!(entity instanceof ItemEntity itemEntity)) {
+                continue;
+            }
+
+            if (LifestealHelper.isRevivalTotem(itemEntity.getStack())) {
+                // TODO: add vfx, notification
+                this.playSoundToPlayer(
+                        SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE,
+                        SoundCategory.PLAYERS,
+                        1, 1
+                );
+
+                this.kill(this.getServerWorld());
+                entity.discard();
+                return;
+            }
         }
 
         this.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, -1, 0, true, false, true));
+        // TODO: translate message
         this.sendMessage(Text.translatable("acofhearts.player.is_dead"), true);
+        // TODO: fix not properly teleporting
         this.teleport(lastDeathPos.getX(),lastDeathPos.getY(),lastDeathPos.getZ(),false);
     }
 }

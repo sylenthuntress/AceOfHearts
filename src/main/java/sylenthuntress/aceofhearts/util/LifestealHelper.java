@@ -4,17 +4,17 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.Item;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -22,7 +22,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Uuids;
-import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 import sylenthuntress.aceofhearts.AceOfHearts;
 import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 import sylenthuntress.aceofhearts.registry.ModGamerules;
@@ -45,24 +45,31 @@ public class LifestealHelper {
 
     private static final Identifier HEALTH_MODIFIER_ID = AceOfHearts.modIdentifier("stolen_hearts");
 
-    public static void removeHeart(ServerPlayerEntity owner, Optional<ServerPlayerEntity> source, boolean dropItem) {
+    public static void removeHeart(PlayerEntity owner, Optional<? extends PlayerEntity> source, boolean dropItem) {
         owner.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 6, 0, false, false));
         owner.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 6, 0, false, false));
         addHearts(owner, -1);
 
         if (source.isEmpty() || hasMaxHearts(source.get())) {
+            ItemStack heartItem = getHeartItem();
+            LoreComponent lore = heartItem.get(DataComponentTypes.LORE);
+            if (lore != null) {
+                lore = lore.with(Text.translatable("item.heart.desc.player", owner.getName()).formatted(Formatting.UNDERLINE, Formatting.DARK_GRAY));
+                heartItem.set(DataComponentTypes.LORE, lore);
+            }
+
             if (dropItem) {
-                owner.dropItem(getHeartItem(), true, true);
-            } else owner.giveItemStack(getHeartItem());
+                owner.dropItem(heartItem, true, true);
+            } else owner.giveItemStack(heartItem);
         } else source.ifPresent(serverPlayer -> addHearts(serverPlayer, 1));
     }
 
     @SuppressWarnings({"UnstableApiUsage"})
-    public static int getHearts(ServerPlayerEntity player) {
+    public static int getHearts(PlayerEntity player) {
         return player.getAttachedOrElse(ModAttachmentTypes.HEARTS, 10);
     }
 
-    public static void recalculateHealth(ServerPlayerEntity player) {
+    public static void recalculateHealth(PlayerEntity player) {
         EntityAttributeInstance attributeInstance = player.getAttributes().getCustomInstance(EntityAttributes.MAX_HEALTH);
         if (attributeInstance == null) {
             return;
@@ -81,13 +88,13 @@ public class LifestealHelper {
         ));
     }
 
-    public static void addHearts(ServerPlayerEntity player, int amount) {
+    public static void addHearts(PlayerEntity player, int amount) {
         setHearts(player, getHearts(player) + amount);
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public static void setHearts(ServerPlayerEntity player, int amount) {
-        player.setAttached(ModAttachmentTypes.HEARTS, Math.clamp(amount, 0, getMaxHearts(player.getServerWorld())));
+    public static void setHearts(PlayerEntity player, int amount) {
+        player.setAttached(ModAttachmentTypes.HEARTS, Math.clamp(amount, 0, getMaxHearts(player.getWorld())));
         recalculateHealth(player);
     }
 
@@ -134,8 +141,15 @@ public class LifestealHelper {
         return NbtComponent.of(nbt);
     }
 
+    public static NbtComponent getTotemNbt() {
+        var nbt = new NbtCompound();
+        nbt.putBoolean("RevivalTotem", true);
+        return NbtComponent.of(nbt);
+    }
+
     public static ItemStack getRevivalTotem() {
         ItemStack revivalTotem = new ItemStack(Items.TOTEM_OF_UNDYING);
+        revivalTotem.set(DataComponentTypes.CUSTOM_DATA, getTotemNbt());
 
         // Flavor text
         revivalTotem.set(DataComponentTypes.RARITY, Rarity.EPIC);
@@ -167,11 +181,39 @@ public class LifestealHelper {
         return compound.getBoolean("HeartItem", false);
     }
 
-    public static boolean hasMaxHearts(ServerPlayerEntity player) {
-        return getHearts(player) >= getMaxHearts(player.getServerWorld());
+    public static boolean isRevivalTotem(ItemStack stack) {
+        if (stack.getItem() != Items.TOTEM_OF_UNDYING) {
+            return false;
+        }
+
+        var component = stack.get(DataComponentTypes.CUSTOM_DATA);
+        if (component == null) {
+            return false;
+        }
+
+        //noinspection deprecation
+        var compound = component.getNbt();
+        if (compound == null) {
+            return false;
+        }
+
+        return compound.getBoolean("RevivalTotem", false);
     }
 
-    public static int getMaxHearts(ServerWorld world) {
-        return world.getGameRules().getInt(ModGamerules.MAX_HEARTS);
+    public static boolean hasMaxHearts(PlayerEntity player) {
+        return getHearts(player) >= getMaxHearts(player.getWorld());
+    }
+
+    public static int getMaxHearts(World world) {
+        if (!(world instanceof ServerWorld serverWorld)) {
+            return 20;
+        }
+
+        return serverWorld.getGameRules().getInt(ModGamerules.MAX_HEARTS);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static boolean isDead(Entity entity) {
+        return entity.getAttachedOrElse(ModAttachmentTypes.DEAD, false);
     }
 }
