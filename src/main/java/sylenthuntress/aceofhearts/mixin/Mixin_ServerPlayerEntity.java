@@ -17,6 +17,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
@@ -80,8 +81,7 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
         }
 
         this.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, -1, 0, true, false, true));
-        // TODO: translate message
-        this.sendMessage(Text.translatable("acofhearts.player.is_dead"), true);
+        this.sendMessage(Text.literal("You are dead!").formatted(Formatting.RED), true);
         // TODO: fix not properly teleporting
         this.teleport(lastDeathPos.getX(),lastDeathPos.getY(),lastDeathPos.getZ(),false);
     }
