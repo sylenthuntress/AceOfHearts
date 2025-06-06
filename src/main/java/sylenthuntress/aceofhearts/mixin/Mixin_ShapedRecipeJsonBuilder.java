@@ -27,6 +27,6 @@ public class Mixin_ShapedRecipeJsonBuilder implements Duck_ShapedRecipeJsonBuild
             )
     )
     public ItemStack replaceOutput(ItemStack original) {
-        return LifestealHelper.getRevivalTotem();
+        return outputStack;
     }
 }
