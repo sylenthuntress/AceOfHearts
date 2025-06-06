@@ -82,7 +82,6 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
 
         this.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, -1, 0, true, false, true));
         this.sendMessage(Text.literal("You are dead!").formatted(Formatting.RED), true);
-        // TODO: fix not properly teleporting
         this.teleport(lastDeathPos.getX(),lastDeathPos.getY(),lastDeathPos.getZ(),false);
     }
 }
