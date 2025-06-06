@@ -68,8 +68,8 @@ public abstract class Mixin_LivingEntity {
             return;
         }
 
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 6, 0, false, false));
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 6, 0, false, false));
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 320, 0, false, false));
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 320, 0, false, false));
         LifestealHelper.addHearts(player, 1);
         player.sendMessage(
                 Text.translatable(
