@@ -107,10 +107,6 @@ processResources {
             'license'                      : license,
             'description'                  : project.description,
             'java_version'                 : java_version,
-            'curseforge_slug'              : curseforge_slug,
-            'curseforge_id'                : curseforge_id,
-            'modrinth_slug'                : modrinth_slug,
-            'modrinth_id'                  : modrinth_id,
             'github_repo'                  : github_repo,
             'discord_invite'               : discord_invite
     ]
