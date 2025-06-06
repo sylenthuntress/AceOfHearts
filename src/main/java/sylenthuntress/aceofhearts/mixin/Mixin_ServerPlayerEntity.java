@@ -14,6 +14,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -65,16 +66,15 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
             }
 
             if (LifestealHelper.isRevivalTotem(itemEntity.getStack())) {
-                // TODO: add vfx
                 MinecraftServer server = getServer();
                 if (server != null) {
-                    // TODO: translate message
                     server.getPlayerManager().broadcast(
                             Text.translatable("aceofhearts.player.revive_message",
-                                    this.getName(),
-                                    itemEntity.getOwner() == null ? "Unknown" : itemEntity.getOwner().getName(),
+                                    MutableText.of(this.getName().getContent()).formatted(Formatting.GRAY),
+                                    (itemEntity.getOwner() == null ? Text.literal("Unknown") : MutableText.of(itemEntity.getOwner().getName().getContent()))
+                                            .formatted(Formatting.DARK_GRAY),
                                     LifestealHelper.getRevivalTotem().getFormattedName()
-                            ), false
+                            ).formatted(Formatting.GOLD), false
                     );
                 }
 

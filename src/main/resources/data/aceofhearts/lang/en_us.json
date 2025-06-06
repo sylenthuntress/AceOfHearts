@@ -1,7 +1,8 @@
 {
   "aceofhearts.discord": "Discord",
-  "aceofhearts.player.death_message.1": "You have lost all of your hearts and permanently died! %s",
-  "aceofhearts.player.death_message.2": "Sit here, or get another player to revive you by dropping a %s on your corpse.",
+  "aceofhearts.player.perma_killed": "%s has lost all of their hearts and permanently died!",
+  "aceofhearts.player.death_message.2": "You have lost all of your hearts and permanently died!",
+  "aceofhearts.player.death_message.1": "%s Sit here, or get another player to revive you by dropping a %s on your corpse.",
   "aceofhearts.player.revive_message": "%s has been brought back from the dead by %s using a %s!",
   "gamerule.maxStolenHearts": "Maximum hearts from lifesteal",
   "commands.hearts.add.success": "Added %s hearts to %s, for a total of %s.",
