@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
+import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Items;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sylenthuntress.aceofhearts.command.HeartCommand;
 import sylenthuntress.aceofhearts.event.CustomLootTables;
+import sylenthuntress.aceofhearts.event.DisallowMaceEnchantments;
 import sylenthuntress.aceofhearts.event.LifestealEvent;
 import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 import sylenthuntress.aceofhearts.registry.ModGamerules;
@@ -38,6 +40,7 @@ public class AceOfHearts implements ModInitializer {
         ServerPlayerEvents.JOIN.register(new LifestealEvent());
         LootTableEvents.MODIFY.register(new CustomLootTables());
         LootTableEvents.REPLACE.register(new CustomLootTables());
+        EnchantmentEvents.ALLOW_ENCHANTING.register(new DisallowMaceEnchantments());
         CommandRegistrationCallback.EVENT.register(new HeartCommand());
 
         //noinspection CodeBlock2Expr

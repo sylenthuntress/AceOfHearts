@@ -1,1 +1,2 @@
 - Remove death coords mod attachment
+- Disallow mace enchantments (other than windburst)
