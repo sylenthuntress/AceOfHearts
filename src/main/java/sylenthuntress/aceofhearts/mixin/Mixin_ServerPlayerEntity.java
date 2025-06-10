@@ -1,14 +1,12 @@
 package sylenthuntress.aceofhearts.mixin;
 
 import com.mojang.authlib.GameProfile;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.entity.*;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -20,7 +18,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -55,10 +52,11 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
             at = @At("TAIL")
     )
     public void teleportToDeathpoint(CallbackInfo ci) {
-        BlockPos lastDeathPos = this.getAttached(ModAttachmentTypes.DEATH_COORDS);
-        if (lastDeathPos == null || !this.getAttachedOrElse(ModAttachmentTypes.DEAD, false)) {
+        if (this.getLastDeathPos().isEmpty() || !this.getAttachedOrElse(ModAttachmentTypes.DEAD, false)) {
              return;
         }
+
+        BlockPos lastDeathPos = this.getLastDeathPos().get().pos();
 
         for (Entity entity : this.getWorld().getOtherEntities(this, Box.from(lastDeathPos.toCenterPos()).expand(6))) {
             if (!entity.isOnGround() || !(entity instanceof ItemEntity itemEntity) || itemEntity.getOwner() == this) {

@@ -7,7 +7,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -22,7 +21,6 @@ import java.util.Optional;
 public class LifestealEvent implements ServerLivingEntityEvents.AfterDeath, ServerPlayerEvents.AfterRespawn, ServerPlayerEvents.Join {
     @Override
     public void afterDeath(LivingEntity entity, DamageSource damageSource) {
-        entity.setAttached(ModAttachmentTypes.DEATH_COORDS, entity.getBlockPos());
         if (!(entity instanceof ServerPlayerEntity player) || player.getGameMode() != GameMode.SURVIVAL) {
             return;
         }
