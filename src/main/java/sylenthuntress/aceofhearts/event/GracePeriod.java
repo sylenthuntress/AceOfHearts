@@ -22,11 +22,12 @@ public class GracePeriod implements ServerLivingEntityEvents.AllowDamage, Server
 
     @Override
     public void onJoin(ServerPlayerEntity player) {
-        if (player.getAttachedOrCreate(ModAttachmentTypes.GRACE_PERIOD) == -1) {
+        if (player.getAttachedOrElse(ModAttachmentTypes.GRACE_PERIOD, -1) == -1) {
+            player.modifyAttached(ModAttachmentTypes.GRACE_PERIOD, duration -> duration + 100);
             return;
         }
 
-        player.modifyAttached(ModAttachmentTypes.GRACE_PERIOD, period -> period + 36000);
+        player.setAttached(ModAttachmentTypes.GRACE_PERIOD, 36000);
     }
 
     private Entity prevAttacker;

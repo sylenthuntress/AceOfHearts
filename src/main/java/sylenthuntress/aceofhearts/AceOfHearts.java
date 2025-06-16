@@ -45,6 +45,7 @@ public class AceOfHearts implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(new HeartCommand());
         ServerPlayerEvents.AFTER_RESPAWN.register(new GracePeriod());
         ServerPlayerEvents.JOIN.register(new GracePeriod());
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register(new GracePeriod());
 
         //noinspection CodeBlock2Expr
         DefaultItemComponentEvents.MODIFY.register(modifyContext -> {

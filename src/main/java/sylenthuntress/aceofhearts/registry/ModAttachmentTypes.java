@@ -26,7 +26,6 @@ public class ModAttachmentTypes {
             builder -> builder
                     .initializer(() -> -1)
                     .persistent(Codec.INT)
-                    .copyOnDeath()
     );
 
     public static void registerAll() {
