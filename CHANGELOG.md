@@ -1,2 +1,1 @@
-- Remove death coords mod attachment
-- Disallow mace enchantments (other than windburst)
+- Add SDLink x Geyser compat

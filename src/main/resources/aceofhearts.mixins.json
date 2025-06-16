@@ -4,10 +4,12 @@
   "package": "sylenthuntress.aceofhearts.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
+  "plugin": "sylenthuntress.aceofhearts.util.MixinConfigPlugin",
   "mixins": [
     "Access_ItemEntry",
     "Access_LootTableBuilder",
     "Access_TagEntry",
+    "Mixin_DiscordAuthor",
     "Mixin_EndCrystalEntity",
     "Mixin_ItemEntity",
     "Mixin_LivingEntity",
