@@ -13,9 +13,11 @@ import org.spongepowered.asm.mixin.injection.At;
 public class Mixin_DiscordAuthor {
     @WrapOperation(
             method = "of(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/hypherionmc/sdlink/api/accounts/DiscordAuthor;",
+            remap = false,
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/hypherionmc/sdlink/core/config/AvatarType;resolve(Ljava/lang/String;)Ljava/lang/String;"
+                    target = "Lcom/hypherionmc/sdlink/core/config/AvatarType;resolve(Ljava/lang/String;)Ljava/lang/String;",
+                    remap = false
             )
     )
     private static String geyserCompat(AvatarType instance, String uuid, Operation<String> original, String displayName, String username) {

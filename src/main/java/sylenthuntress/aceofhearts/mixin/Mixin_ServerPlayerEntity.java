@@ -109,7 +109,7 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
     public void tickGracePeriod(CallbackInfo ci) {
         int gracePeriod = this.getAttachedOrCreate(ModAttachmentTypes.GRACE_PERIOD);
         if (gracePeriod > 0) {
-            this.sendMessage(Text.literal("You are immune to combat for " + gracePeriod / 20 + " seconds!").formatted(Formatting.GOLD), true);
+            this.sendMessage(Text.literal("You are immune to PvP combat for " + gracePeriod / 20 + " seconds!").formatted(Formatting.GOLD), true);
             this.modifyAttached(ModAttachmentTypes.GRACE_PERIOD, period -> --period);
 
             if (gracePeriod == 1) {

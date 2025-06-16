@@ -1,6 +1,6 @@
 {
   "aceofhearts.discord": "Discord",
-  "aceofhearts.player.grace_period.attacker": "This player is immune to combat for %s more seconds!",
+  "aceofhearts.player.grace_period.attacker": "This player is immune to PvP combat for %s more seconds!",
   "aceofhearts.player.grace_period.attacked": "A player has attacked you during your grace period!",
   "aceofhearts.player.grace_period.ended": "Your grace period has ended! Reason: %s",
   "aceofhearts.player.grace_period.ended.disrupt": "attacking other players",
