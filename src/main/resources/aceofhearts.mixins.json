@@ -16,7 +16,8 @@
     "Mixin_LootTable",
     "Mixin_ServerPlayerEntity",
     "Mixin_ShapedRecipeJsonBuilder",
-    "Mixin_SmithingScreenHandler"
+    "Mixin_SmithingScreenHandler",
+    "Mixin_WardenEntity"
   ],
   "client": [],
   "server": [],
