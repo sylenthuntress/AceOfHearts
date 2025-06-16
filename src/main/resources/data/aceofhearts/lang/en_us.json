@@ -1,5 +1,10 @@
 {
   "aceofhearts.discord": "Discord",
+  "aceofhearts.player.grace_period.attacker": "This player is immune to combat for %s more seconds!",
+  "aceofhearts.player.grace_period.attacked": "A player has attacked you during your grace period!",
+  "aceofhearts.player.grace_period.ended": "Your grace period has ended! Reason: %s",
+  "aceofhearts.player.grace_period.ended.disrupt": "attacking other players",
+  "aceofhearts.player.grace_period.ended.time": "expired",
   "aceofhearts.player.death_message.1": "%s Sit here, or get another player to revive you by dropping a %s on your corpse.",
   "aceofhearts.player.death_message.2": "You have lost all of your hearts and permanently died!",
   "aceofhearts.player.perma_killed": "%s has lost all of their hearts and permanently died!",

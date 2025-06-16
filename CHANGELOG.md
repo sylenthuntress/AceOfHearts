@@ -1,1 +1,1 @@
-- Add SDLink x Geyser compat
+- Add grace period (experimental)

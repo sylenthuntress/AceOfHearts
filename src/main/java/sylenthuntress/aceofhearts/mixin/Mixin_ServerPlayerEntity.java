@@ -1,7 +1,10 @@
 package sylenthuntress.aceofhearts.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.*;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,6 +23,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -35,9 +39,6 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
     }
 
     @Shadow public abstract boolean teleport(ServerWorld world, double destX, double destY, double destZ, Set<PositionFlag> flags, float yaw, float pitch, boolean resetCamera);
-
-    @Shadow public abstract void sendMessageToClient(Text message, boolean overlay);
-
     @Shadow public abstract void sendMessage(Text message, boolean overlay);
 
     @Shadow public abstract ServerWorld getServerWorld();
@@ -45,6 +46,9 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
     @Shadow public abstract void playSoundToPlayer(SoundEvent sound, SoundCategory category, float volume, float pitch);
 
     @Shadow public abstract void addEnchantedHitParticles(Entity target);
+
+    @Unique
+    private Entity prevAttacker;
 
     @SuppressWarnings("UnstableApiUsage")
     @Inject(
@@ -98,5 +102,61 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
         this.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, -1, 0, true, false, true));
         this.sendMessage(Text.literal("You are dead!").formatted(Formatting.RED), true);
         this.teleport(lastDeathPos.getX(),lastDeathPos.getY(),lastDeathPos.getZ(),false);
+    }
+
+    @Shadow
+    public abstract void attack(Entity target);
+
+    @SuppressWarnings("UnstableApiUsage")
+    @Inject(method = "tick", at = @At("HEAD"))
+    public void tickGracePeriod(CallbackInfo ci) {
+        int gracePeriod = this.getAttachedOrCreate(ModAttachmentTypes.GRACE_PERIOD);
+        if (gracePeriod > 0) {
+            this.sendMessage(Text.literal("You are immune to combat for " + gracePeriod / 20 + " seconds!").formatted(Formatting.GOLD), true);
+            this.modifyAttached(ModAttachmentTypes.GRACE_PERIOD, period -> --period);
+
+            if (gracePeriod == 1) {
+                this.sendMessage(Text.translatable("aceofhearts.player.grace_period.ended",
+                        Text.translatable("aceofhearts.player.grace_period.ended.time")
+                                .formatted(Formatting.GOLD)
+                ).formatted(Formatting.RED), false);
+            }
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    @Inject(method = "enterCombat", at = @At("HEAD"))
+    public void endGracePeriod(CallbackInfo ci) {
+        int gracePeriod = this.getAttachedOrCreate(ModAttachmentTypes.GRACE_PERIOD);
+        if (gracePeriod > 0) {
+            this.sendMessage(Text.translatable("aceofhearts.player.grace_period.ended",
+                    Text.translatable("aceofhearts.player.grace_period.ended.disrupt")
+                            .formatted(Formatting.GOLD)
+            ).formatted(Formatting.RED), false);
+            this.setAttached(ModAttachmentTypes.GRACE_PERIOD, 0);
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    @WrapMethod(method = "damage")
+    public boolean gracePeriod(ServerWorld world, DamageSource source, float amount, Operation<Boolean> original) {
+        Entity attacker = source.getAttacker();
+        int gracePeriod = this.getAttachedOrCreate(ModAttachmentTypes.GRACE_PERIOD);
+
+        if (attacker != null && attacker.getType() == EntityType.PLAYER) {
+            if (gracePeriod > 0) {
+                if (attacker instanceof PlayerEntity player) {
+                    player.sendMessage(Text.translatable("aceofhearts.player.grace_period.attacker", gracePeriod / 20).formatted(Formatting.RED), false);
+                }
+
+                if (prevAttacker == attacker) {
+                    attacker.damage(world, source, amount);
+                } else prevAttacker = attacker;
+
+                amount = 0;
+            }
+        }
+
+        return original.call(world, source, amount);
     }
 }

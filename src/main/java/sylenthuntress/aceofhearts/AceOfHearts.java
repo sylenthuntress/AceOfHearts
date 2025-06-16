@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import sylenthuntress.aceofhearts.command.HeartCommand;
 import sylenthuntress.aceofhearts.event.CustomLootTables;
 import sylenthuntress.aceofhearts.event.DisallowMaceEnchantments;
+import sylenthuntress.aceofhearts.event.GracePeriod;
 import sylenthuntress.aceofhearts.event.LifestealEvent;
 import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 import sylenthuntress.aceofhearts.registry.ModGamerules;
@@ -42,6 +43,8 @@ public class AceOfHearts implements ModInitializer {
         LootTableEvents.REPLACE.register(new CustomLootTables());
         EnchantmentEvents.ALLOW_ENCHANTING.register(new DisallowMaceEnchantments());
         CommandRegistrationCallback.EVENT.register(new HeartCommand());
+        ServerPlayerEvents.AFTER_RESPAWN.register(new GracePeriod());
+        ServerPlayerEvents.JOIN.register(new GracePeriod());
 
         //noinspection CodeBlock2Expr
         DefaultItemComponentEvents.MODIFY.register(modifyContext -> {

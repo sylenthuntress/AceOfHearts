@@ -21,6 +21,14 @@ public class ModAttachmentTypes {
                     .persistent(Codec.BOOL)
     );
 
+    public static final AttachmentType<Integer> GRACE_PERIOD = AttachmentRegistry.create(
+            AceOfHearts.modIdentifier("grace_period"),
+            builder -> builder
+                    .initializer(() -> -1)
+                    .persistent(Codec.INT)
+                    .copyOnDeath()
+    );
+
     public static void registerAll() {
 
     }
