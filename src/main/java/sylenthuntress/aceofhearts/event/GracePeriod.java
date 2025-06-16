@@ -17,7 +17,7 @@ import sylenthuntress.aceofhearts.registry.ModAttachmentTypes;
 public class GracePeriod implements ServerLivingEntityEvents.AllowDamage, ServerPlayerEvents.Join, ServerPlayerEvents.AfterRespawn {
     @Override
     public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
-        newPlayer.modifyAttached(ModAttachmentTypes.GRACE_PERIOD, period -> period + 6000);
+        newPlayer.setAttached(ModAttachmentTypes.GRACE_PERIOD, 6000);
     }
 
     @Override

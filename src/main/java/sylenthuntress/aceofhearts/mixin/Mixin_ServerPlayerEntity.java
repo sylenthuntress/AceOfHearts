@@ -122,8 +122,12 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    @Inject(method = "enterCombat", at = @At("HEAD"))
-    public void endGracePeriod(CallbackInfo ci) {
+    @Inject(method = "attack", at = @At("HEAD"))
+    public void endGracePeriod(Entity target, CallbackInfo ci) {
+        if (!(target instanceof PlayerEntity)) {
+            return;
+        }
+
         int gracePeriod = this.getAttachedOrCreate(ModAttachmentTypes.GRACE_PERIOD);
         if (gracePeriod > 0) {
             this.sendMessage(Text.translatable("aceofhearts.player.grace_period.ended",

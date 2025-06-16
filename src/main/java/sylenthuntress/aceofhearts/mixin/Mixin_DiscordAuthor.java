@@ -12,7 +12,7 @@ public class Mixin_DiscordAuthor {
     @WrapMethod(method = "of(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/hypherionmc/sdlink/api/accounts/DiscordAuthor;")
     private static DiscordAuthor geyserCompat(String displayName, String uuid, String username, Operation<DiscordAuthor> original) {
         if (username.startsWith(".")) {
-            uuid = "." + uuid;
+            uuid = "." + username;
         }
 
         return original.call(displayName, uuid, username);
