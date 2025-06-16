@@ -1,10 +1,7 @@
 package sylenthuntress.aceofhearts.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.*;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -135,28 +132,5 @@ public abstract class Mixin_ServerPlayerEntity extends PlayerEntity {
             ).formatted(Formatting.RED), false);
             this.setAttached(ModAttachmentTypes.GRACE_PERIOD, 0);
         }
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    @WrapMethod(method = "damage")
-    public boolean gracePeriod(ServerWorld world, DamageSource source, float amount, Operation<Boolean> original) {
-        Entity attacker = source.getAttacker();
-        int gracePeriod = this.getAttachedOrCreate(ModAttachmentTypes.GRACE_PERIOD);
-
-        if (attacker != null && attacker.getType() == EntityType.PLAYER) {
-            if (gracePeriod > 0) {
-                if (attacker instanceof PlayerEntity player) {
-                    player.sendMessage(Text.translatable("aceofhearts.player.grace_period.attacker", gracePeriod / 20).formatted(Formatting.RED), false);
-                }
-
-                if (prevAttacker == attacker) {
-                    attacker.damage(world, source, amount);
-                } else prevAttacker = attacker;
-
-                amount = 0;
-            }
-        }
-
-        return original.call(world, source, amount);
     }
 }
