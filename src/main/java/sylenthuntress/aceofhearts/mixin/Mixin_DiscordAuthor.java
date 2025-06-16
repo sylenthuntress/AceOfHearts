@@ -1,20 +1,28 @@
 package sylenthuntress.aceofhearts.mixin;
 
 import com.hypherionmc.sdlink.api.accounts.DiscordAuthor;
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.hypherionmc.sdlink.core.config.AvatarType;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
+import org.spongepowered.asm.mixin.injection.At;
 
 @Pseudo
 @Mixin(DiscordAuthor.class)
 public class Mixin_DiscordAuthor {
-    @WrapMethod(method = "of(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/hypherionmc/sdlink/api/accounts/DiscordAuthor;")
-    private static DiscordAuthor geyserCompat(String displayName, String uuid, String username, Operation<DiscordAuthor> original) {
+    @WrapOperation(
+            method = "of(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/hypherionmc/sdlink/api/accounts/DiscordAuthor;",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/hypherionmc/sdlink/core/config/AvatarType;resolve(Ljava/lang/String;)Ljava/lang/String;"
+            )
+    )
+    private static String geyserCompat(AvatarType instance, String uuid, Operation<String> original, String displayName, String username) {
         if (username.startsWith(".")) {
-            uuid = "." + username;
+            uuid = username;
         }
 
-        return original.call(displayName, uuid, username);
+        return original.call(instance, uuid);
     }
 }
