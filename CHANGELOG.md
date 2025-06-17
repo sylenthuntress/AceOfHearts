@@ -1,4 +1,1 @@
-- Mostly fix up grace period to be functional
-- Make wardens finally break blocks
-- Fix dysfunctional SDLink x Geyser compatibility
-- Add SemVer support
+- Fix enchantments being universally allowed

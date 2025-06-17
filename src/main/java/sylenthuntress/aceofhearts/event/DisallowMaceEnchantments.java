@@ -29,6 +29,6 @@ public class DisallowMaceEnchantments implements EnchantmentEvents.AllowEnchanti
             return TriState.FALSE;
         }
 
-        return TriState.TRUE;
+        return TriState.DEFAULT;
     }
 }
