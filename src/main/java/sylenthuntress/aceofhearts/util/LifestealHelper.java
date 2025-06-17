@@ -58,9 +58,9 @@ public class LifestealHelper {
                 heartItem.set(DataComponentTypes.LORE, lore);
             }
 
-            if (dropItem) {
+            if (dropItem || !owner.giveItemStack(heartItem)) {
                 owner.dropItem(heartItem, true, true);
-            } else owner.giveItemStack(heartItem);
+            }
         } else source.ifPresent(serverPlayer -> addHearts(serverPlayer, 1));
     }
 
