@@ -1,1 +1,1 @@
-- Fix enchantments being universally allowed
+- Fix grace period logic
