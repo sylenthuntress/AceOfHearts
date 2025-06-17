@@ -1,1 +1,1 @@
-- Fix grace period logic
+- Fixed bug where hearts would get deleted
