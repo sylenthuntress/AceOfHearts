@@ -46,8 +46,8 @@ public class LifestealHelper {
     private static final Identifier HEALTH_MODIFIER_ID = AceOfHearts.modIdentifier("stolen_hearts");
 
     public static void removeHeart(PlayerEntity owner, Optional<? extends PlayerEntity> source, boolean dropItem) {
-        owner.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 6, 0, false, false));
-        owner.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 6, 0, false, false));
+        owner.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 120, 0, false, false));
+        owner.addStatusEffect(new StatusEffectInstance(StatusEffects.DARKNESS, 120, 0, false, false));
         addHearts(owner, -1);
 
         if (source.isEmpty() || hasMaxHearts(source.get())) {
