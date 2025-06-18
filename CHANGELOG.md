@@ -1,1 +1,2 @@
-- Fixed bug where hearts would get deleted
+- Lower debuff duration from consuming hearts
+- Fix cosmetic netherite mechanic
