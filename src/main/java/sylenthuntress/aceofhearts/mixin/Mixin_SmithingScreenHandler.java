@@ -40,11 +40,12 @@ public abstract class Mixin_SmithingScreenHandler extends ForgingScreenHandler {
     )
     private void replaceNetherite(CallbackInfo ci) {
         if (this.input.getStack(TEMPLATE_ID).getItem() == Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE) {
-            ItemStack inputStack = this.input.getStack(0);
+            ItemStack inputStack = this.input.getStack(EQUIPMENT_ID);
             ItemStack outputStack = this.output.getStack(0);
 
             copyComponent(DataComponentTypes.ATTRIBUTE_MODIFIERS, outputStack, inputStack);
             copyComponent(DataComponentTypes.DAMAGE_RESISTANT, outputStack, inputStack);
+            copyComponent(DataComponentTypes.MAX_DAMAGE, outputStack, inputStack);
 
             outputStack.set(DataComponentTypes.LORE,
                     new LoreComponent(
