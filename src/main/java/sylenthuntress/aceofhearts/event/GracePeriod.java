@@ -27,7 +27,7 @@ public class GracePeriod implements ServerLivingEntityEvents.AllowDamage, Server
             return;
         }
 
-        player.modifyAttached(ModAttachmentTypes.GRACE_PERIOD, duration -> duration + 100);
+        player.modifyAttached(ModAttachmentTypes.GRACE_PERIOD, duration -> duration + 300);
     }
 
     private Entity prevAttacker;
