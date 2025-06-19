@@ -1,2 +1,2 @@
-- Lower debuff duration from consuming hearts
-- Fix cosmetic netherite mechanic
+- Add grace period upon entering the end
+- Enable the end
