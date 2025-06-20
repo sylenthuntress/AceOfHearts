@@ -59,6 +59,11 @@ public abstract class Mixin_SmithingScreenHandler extends ForgingScreenHandler {
 
     @Unique
     private static <T> void copyComponent(ComponentType<T> componentType, ItemStack stack, ItemStack sourceStack) {
-        stack.set(componentType, sourceStack.get(componentType));
+        T component = sourceStack.get(componentType);
+        if (component == null) {
+            component = sourceStack.getDefaultComponents().get(componentType);
+        }
+
+        stack.set(componentType, component);
     }
 }

@@ -1,2 +1,1 @@
-- Add grace period upon entering the end
-- Enable the end
+- Possibly fix netherite
