@@ -1,1 +1,1 @@
-- Possibly fix netherite
+- Prevent totems dropping from Evokers

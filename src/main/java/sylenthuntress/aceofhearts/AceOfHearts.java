@@ -6,11 +6,14 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Items;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +51,13 @@ public class AceOfHearts implements ModInitializer {
         ServerPlayerEvents.AFTER_RESPAWN.register(new GracePeriod());
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(new GracePeriod());
         ServerLivingEntityEvents.ALLOW_DAMAGE.register(new GracePeriod());
+        UseBlockCallback.EVENT.register((player, world, hand, bhr) -> {
+            if (world.getBlockState(bhr.getBlockPos()).getBlock() == Blocks.END_PORTAL_FRAME) {
+                return ActionResult.FAIL;
+            }
+
+            return ActionResult.PASS;
+        });
 
         //noinspection CodeBlock2Expr
         DefaultItemComponentEvents.MODIFY.register(modifyContext -> {

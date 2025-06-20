@@ -7,13 +7,11 @@
   "plugin": "sylenthuntress.aceofhearts.util.MixinConfigPlugin",
   "mixins": [
     "Access_ItemEntry",
-    "Access_LootTableBuilder",
     "Access_TagEntry",
     "Mixin_DiscordAuthor",
     "Mixin_EndCrystalEntity",
     "Mixin_ItemEntity",
     "Mixin_LivingEntity",
-    "Mixin_LootTable",
     "Mixin_ServerPlayerEntity",
     "Mixin_ShapedRecipeJsonBuilder",
     "Mixin_SmithingScreenHandler",
